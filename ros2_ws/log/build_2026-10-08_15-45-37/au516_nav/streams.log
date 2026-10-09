@@ -1,0 +1,24 @@
+[1.881s] Invoking command in '/home/pi/ros2_ws/build/au516_nav': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pi/ros2_ws/build/au516_nav/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pi/ros2_ws/install/au516_nav/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/pi/ros2_ws/build/au516_nav/build --no-deps symlink_data
+[2.241s] running develop
+[2.432s] running egg_info
+[2.432s] creating au516_nav.egg-info
+[2.450s] writing au516_nav.egg-info/PKG-INFO
+[2.451s] writing dependency_links to au516_nav.egg-info/dependency_links.txt
+[2.451s] writing entry points to au516_nav.egg-info/entry_points.txt
+[2.451s] writing requirements to au516_nav.egg-info/requires.txt
+[2.451s] writing top-level names to au516_nav.egg-info/top_level.txt
+[2.451s] writing manifest file 'au516_nav.egg-info/SOURCES.txt'
+[2.488s] reading manifest file 'au516_nav.egg-info/SOURCES.txt'
+[2.489s] writing manifest file 'au516_nav.egg-info/SOURCES.txt'
+[2.509s] running build_ext
+[2.509s] Creating /home/pi/ros2_ws/install/au516_nav/lib/python3.12/site-packages/au516-nav.egg-link (link to .)
+[2.510s] Installing scan_viewer script to /home/pi/ros2_ws/install/au516_nav/lib/au516_nav
+[2.510s] 
+[2.510s] Installed /home/pi/ros2_ws/build/au516_nav
+[2.511s] running symlink_data
+[2.511s] creating /home/pi/ros2_ws/install/au516_nav/share/ament_index
+[2.511s] creating /home/pi/ros2_ws/install/au516_nav/share/ament_index/resource_index
+[2.511s] creating /home/pi/ros2_ws/install/au516_nav/share/ament_index/resource_index/packages
+[2.511s] symbolically linking /home/pi/ros2_ws/build/au516_nav/resource/au516_nav -> /home/pi/ros2_ws/install/au516_nav/share/ament_index/resource_index/packages
+[2.511s] symbolically linking /home/pi/ros2_ws/build/au516_nav/package.xml -> /home/pi/ros2_ws/install/au516_nav/share/au516_nav
+[2.598s] Invoked command in '/home/pi/ros2_ws/build/au516_nav' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/pi/ros2_ws/build/au516_nav/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/pi/ros2_ws/install/au516_nav/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/pi/ros2_ws/build/au516_nav/build --no-deps symlink_data

@@ -1,0 +1,2 @@
+[console_scripts]
+scan_viewer = au516_nav.scan_viewer:main
