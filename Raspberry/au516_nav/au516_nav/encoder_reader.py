@@ -12,7 +12,8 @@ class EncoderReader(Node):
     def __init__(self):
         super().__init__("encoder_reader")
 
-        port = self.declare_parameter("port", "/dev/ttyACM0").value
+        # FTDI cable wired to the Pico UART (stable name, unlike /dev/ttyUSBx)
+        port = self.declare_parameter("port", "/dev/serial/by-id/usb-FTDI_TTL232R_FTBG33U7-if00-port0").value
         baudrate = self.declare_parameter("baudrate", 115200).value
 
         self.ser = serial.Serial(port, baudrate, timeout=0)
