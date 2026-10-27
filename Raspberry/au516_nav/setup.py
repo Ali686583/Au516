@@ -30,4 +30,4 @@ setup(
         ],
     },
 )
-"Nigga"
+"Nigga voilà c'est pas ouf"
