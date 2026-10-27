@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'scan_viewer = au516_nav.scan_viewer:main',
+            'encoder_reader = au516_nav.encoder_reader:main',
         ],
     },
 )
