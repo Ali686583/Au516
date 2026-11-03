@@ -22,10 +22,23 @@ class EncoderReader(Node):
         self.publisher = self.create_publisher(Int32MultiArray, "/encoders", 10)
         self.create_timer(0.005, self.read_serial)
 
+        # Report every 2 s how many bytes/messages came in, to debug the link
+        self.nb_bytes = 0
+        self.nb_msgs = 0
+        self.create_timer(2.0, self.report)
+
         self.get_logger().info(f"Listening to the Pico on {port}")
 
+    def report(self):
+        if self.nb_msgs == 0:
+            self.get_logger().warn(f"No encoder message yet ({self.nb_bytes} bytes received)")
+        else:
+            self.get_logger().info(f"{self.nb_msgs} messages received, last: {self.last}")
+
     def read_serial(self):
-        self.buffer += self.ser.read(self.ser.in_waiting or 1)
+        data = self.ser.read(self.ser.in_waiting or 1)
+        self.nb_bytes += len(data)
+        self.buffer += data
 
         # Only parse complete lines, keep the partial one for the next call
         *lines, self.buffer = self.buffer.split(b"\n")
@@ -41,6 +54,8 @@ class EncoderReader(Node):
             msg = Int32MultiArray()
             msg.data = [enc_L, enc_R]
             self.publisher.publish(msg)
+            self.nb_msgs += 1
+            self.last = (enc_L, enc_R)
 
     def destroy_node(self):
         self.ser.close()
