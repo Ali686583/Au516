@@ -24,9 +24,10 @@ class OdometryNode(Node):
         self.steering_center = 1500
         self.steering_pwm = 1500
 
-        # Set after steering calibration
-        self.max_steering_deg = 0.0
-        self.steering_sign = 1.0
+        # Steering calibration: 1000 -> 20 deg left, 2000 -> 20 deg right
+        self.max_steering_deg = 20.0
+        # PWM > 1500 turns right, which is a negative angle in ROS (counter-clockwise positive)
+        self.steering_sign = -1.0
 
         # Robot position
         self.x = 0.0
@@ -34,7 +35,6 @@ class OdometryNode(Node):
         self.theta = 0.0
 
         self.last_encoders = None
-        self.last_time = None
 
         self.meters_per_tick = (
             math.pi * self.wheel_diameter / self.ticks_per_rev
@@ -85,14 +85,6 @@ class OdometryNode(Node):
 
         if self.last_encoders is None:
             self.last_encoders = (enc_left, enc_right)
-            self.last_time = now
-            return
-
-        dt = (now - self.last_time).nanoseconds / 1e9
-
-        if dt <= 0:
-            self.last_encoders = (enc_left, enc_right)
-            self.last_time = now
             return
 
         # Encoder increments
@@ -100,7 +92,6 @@ class OdometryNode(Node):
         delta_right = enc_right - self.last_encoders[1]
 
         self.last_encoders = (enc_left, enc_right)
-        self.last_time = now
 
         # Distance travelled by each wheel
         distance_left = delta_left * self.meters_per_tick
@@ -136,15 +127,10 @@ class OdometryNode(Node):
             math.cos(self.theta)
         )
 
-        linear_velocity = distance / dt
-        angular_velocity = delta_theta / dt
-
-        self.publish_odometry(
-            now, linear_velocity, angular_velocity
-        )
+        self.publish_odometry(now)
 
 
-    def publish_odometry(self, now, linear, angular):
+    def publish_odometry(self, now):
 
         qz = math.sin(self.theta / 2.0)
         qw = math.cos(self.theta / 2.0)
@@ -160,17 +146,6 @@ class OdometryNode(Node):
 
         msg.pose.pose.orientation.z = qz
         msg.pose.pose.orientation.w = qw
-
-        msg.twist.twist.linear.x = linear
-        msg.twist.twist.angular.z = angular
-
-        # Conservative initial uncertainty estimates
-        msg.pose.covariance[0] = 0.02
-        msg.pose.covariance[7] = 0.02
-        msg.pose.covariance[14] = 1e6
-        msg.pose.covariance[21] = 1e6
-        msg.pose.covariance[28] = 1e6
-        msg.pose.covariance[35] = 1.0
 
         self.odom_pub.publish(msg)
 
