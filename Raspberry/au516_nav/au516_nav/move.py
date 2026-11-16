@@ -8,7 +8,7 @@ from std_msgs.msg import Int32MultiArray
 
 
 HELP = """
-Keyboard control of the robot (requires encoder_reader to be running)
+Keyboard control of the robot (requires serial_bridge to be running)
 ---------------------------
    z / up arrow    : faster forward (or slower backward)
    s / down arrow  : slower forward (or faster backward)
@@ -25,8 +25,8 @@ SPEED_MAX = 50
 
 STEER_CENTER = 1500  # servo pulse in us
 STEER_STEP = 100
-STEER_MIN = 1000
-STEER_MAX = 2000
+STEER_MIN = 1000     # 20 deg to the left
+STEER_MAX = 2000     # 20 deg to the right
 
 # Arrow keys are sent by the terminal as escape sequences
 ARROWS = {"\x1b[A": "z", "\x1b[B": "s", "\x1b[D": "q", "\x1b[C": "d"}
@@ -34,12 +34,12 @@ ARROWS = {"\x1b[A": "z", "\x1b[B": "s", "\x1b[D": "q", "\x1b[C": "d"}
 
 class Move(Node):
     """
-    Reads the keyboard and publishes [speed, steering_pulse_us] on /pico_cmd.
-    The command is re-sent every 0.1 s because the Pico stops the robot after 0.5 s without command.
+    Reads the keyboard and publishes [speed, steering_pulse_us] on /cmd_drive (read by serial_bridge).
+    The command is re-sent every 0.1 s because serial_bridge stops the robot after 0.3 s without command.
     """
     def __init__(self):
         super().__init__("move")
-        self.publisher = self.create_publisher(Int32MultiArray, "/pico_cmd", 10)
+        self.publisher = self.create_publisher(Int32MultiArray, "/cmd_drive", 10)
         self.speed = 0
         self.steering = STEER_CENTER
 
@@ -50,9 +50,9 @@ class Move(Node):
         elif key == "s":
             self.speed = max(self.speed - SPEED_STEP, SPEED_MIN)
         elif key == "q":
-            self.steering = min(self.steering + STEER_STEP, STEER_MAX)
-        elif key == "d":
             self.steering = max(self.steering - STEER_STEP, STEER_MIN)
+        elif key == "d":
+            self.steering = min(self.steering + STEER_STEP, STEER_MAX)
         elif key == "c":
             self.steering = STEER_CENTER
         elif key == " ":
