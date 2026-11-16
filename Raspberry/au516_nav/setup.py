@@ -10,7 +10,7 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
-        ('share/au516_nav/launch', ['launch/slam.launch.py']),
+        ('share/au516_nav/launch', ['launch/slam_launch.py']),
         ('share/au516_nav/config', ['config/slam.yaml']),
     ],
     install_requires=['setuptools'],
