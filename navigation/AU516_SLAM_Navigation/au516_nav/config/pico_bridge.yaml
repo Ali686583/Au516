@@ -1,0 +1,24 @@
+# Pont série RPi5 <-> Pico W : À CALIBRER sur la voiture (voir README_NAVIGATION.md §Calibration)
+pico_bridge:
+  ros__parameters:
+    port: /dev/serial/by-id/usb-FTDI_TTL232R_FTBG33U7-if00-port0
+    baudrate: 115200
+    wheel_diameter: 0.065        # m
+    ticks_per_rev: 1260.0
+    encoder_left_sign: -1.0      # vérifier : en avançant, les deux vitesses de /wheel_speeds > 0
+    encoder_right_sign: 1.0
+    track: 0.18
+    wheelbase: 0.165             # m, mesuré (odometry_node.py de l'équipe)
+    max_steer: 0.34907           # rad = 20° (1000 us = 20° à gauche, 2000 us = 20° à droite)
+    servo_center_us: 1500        # roues droites
+    servo_us_at_max_steer: 500   # µs ajoutés au centre pour delta_max : 1500 ± 500 = ±20°
+    steering_sign: -1.0          # 1000 us = gauche : un braquage à gauche (delta > 0) doit donner < 1500 us
+    servo_min_us: 1000
+    servo_max_us: 2000
+    speed_min: -10
+    speed_max: 50
+    cmd_timeout: 0.3
+    command_rate: 50.0
+    use_encoder_yaw: false       # true seulement si les roues arrière tournent librement
+    publish_tf: true
+    dry_run: false
