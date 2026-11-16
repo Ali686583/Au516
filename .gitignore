@@ -1,0 +1,11 @@
+# Générés par colcon build : ils se recréent sur le Pi, inutile de les envoyer sur GitHub
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
