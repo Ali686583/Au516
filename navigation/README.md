@@ -2,6 +2,23 @@
 
 Travail d'Ali sur la navigation. Tout est rangé ici pour ne rien modifier dans les dossiers de l'équipe : `Codes/`, `Raspberry/`, `Ressources/` et `ros2_ws/` restent tels que l'équipe les a laissés.
 
+## Intégration dans le paquet du robot (16/11, branche `integration-navigation`)
+
+La navigation autonome est maintenant **intégrée dans `Raspberry/au516_nav`**, le paquet que `push_to_pi.ps1` envoie sur le Pi. Mode d'emploi complet : [`Raspberry/au516_nav/README.md`](../Raspberry/au516_nav/README.md). On lance tout avec `ros2 launch au516_nav robot_launch.py`.
+
+| Venu de `navigation/AU516_SLAM_Navigation/au516_nav/` | Dans `Raspberry/au516_nav/` |
+|---|---|
+| `au516_nav/nav_core/` (algorithme) | copié, avec en plus `nav_core/drive.py` (conversion `[speed, pulse]`) |
+| `local_navigator.py` | copié, avec ces changements : état publié sur `/nav/enabled`, **correction d'un plantage** (couleurs entières dans les marqueurs RViz, refusées par ROS 2 Jazzy), arrêt propre avec CTRL+C |
+| `sim_2d.py` | copié, avec en plus l'émulation du Pico sur un faux port série et `/sim/ground_truth` |
+| `config/nav.yaml`, `rviz/au516_nav.rviz` | `config/nav.yaml` (`autostart: false`), `config/navigation.rviz` |
+| `test/test_scenarios.py`, `test/test_map_memory.py` | copiés tels quels |
+| `pico_bridge.py`, `config/pico_bridge.yaml` | **non repris** : ils faisaient double emploi avec `serial_bridge` et `odometry_node` (même port série, même `/odom`). La conversion `/cmd_vel` → `[speed, pulse]` est dans le nouveau nœud `drive_mux` |
+| `launch/*.launch.py` | **non repris**, remplacés par `launch/robot_launch.py`. Le `slam.launch.py` d'ici lançait slam_toolbox comme un nœud simple : sous Jazzy, il n'est alors jamais activé (pas de carte). `robot_launch.py` utilise le même lancement que `slam_launch.py` de l'équipe |
+| `encoder_reader.py`, `conversion_2D.py`, `scan_viewer.py` | non repris : les versions de l'équipe sont déjà dans le paquet |
+
+Ce dossier `navigation/` reste tel quel, comme référence. Il est toujours ignoré par colcon (`COLCON_IGNORE`).
+
 ## `README_NAVIGATION.md`
 
 Le mode d'emploi complet du paquet de navigation autonome (`AU516_SLAM_Navigation/`) : architecture, algorithme pas à pas, installation, lancement, calibration, tests et limites. Mis à jour le 16/11 avec les vrais réglages de la voiture. Les deux autres copies, dans `AU516_SLAM_Navigation/` et `AU516_SLAM_Navigation/au516_nav/`, sont identiques.

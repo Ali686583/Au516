@@ -4,7 +4,8 @@ import termios
 import tty
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import Int32MultiArray
+from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+from std_msgs.msg import Bool, Int32MultiArray
 
 
 HELP = """
@@ -16,6 +17,8 @@ Keyboard control of the robot (requires serial_bridge to be running)
    d / right arrow : steer right
    c               : center the steering
    space           : STOP
+   n               : start the autonomous navigation (robot_launch.py),
+                     then any other key above stops it and takes the control back
    CTRL+C          : quit (stops the robot)
 """
 
@@ -30,12 +33,17 @@ STEER_MAX = 2000     # 20 deg to the right
 
 # Arrow keys are sent by the terminal as escape sequences
 ARROWS = {"\x1b[A": "z", "\x1b[B": "s", "\x1b[D": "q", "\x1b[C": "d"}
+DRIVE_KEYS = ("z", "s", "q", "d", "c", " ")
 
 
 class Move(Node):
     """
     Reads the keyboard and publishes [speed, steering_pulse_us] on /cmd_drive (read by serial_bridge).
     The command is re-sent every 0.1 s because serial_bridge stops the robot after 0.3 s without command.
+
+    With robot_launch.py, drive_mux only forwards these commands while the autonomous navigation
+    is off. "n" starts the navigation (/nav/enable); while it drives, any driving key stops it
+    first (manual takeover), then applies the key from a stopped car.
     """
     def __init__(self):
         super().__init__("move")
@@ -43,8 +51,42 @@ class Move(Node):
         self.speed = 0
         self.steering = STEER_CENTER
 
+        # State of local_navigator (latched topic: received even if move starts later)
+        self.nav_active = False
+        latched = QoSProfile(
+            depth=1,
+            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+            reliability=ReliabilityPolicy.RELIABLE,
+        )
+        self.nav_enable_pub = self.create_publisher(Bool, "/nav/enable", 10)
+        self.create_subscription(Bool, "/nav/enabled", self.nav_state_cb, latched)
+
+    def nav_state_cb(self, msg):
+        if msg.data == self.nav_active:
+            return
+        self.nav_active = msg.data
+        # When the control comes back, start again from a stopped car
+        self.speed, self.steering = 0, STEER_CENTER
+        if msg.data:
+            state = "ON (any driving key takes the control back)"
+        else:
+            state = "OFF, manual control"
+        print(f"\rAutonomous navigation {state}          ", end="", flush=True)
+
+    def set_navigation(self, enabled):
+        self.speed, self.steering = 0, STEER_CENTER
+        self.nav_enable_pub.publish(Bool(data=enabled))
+
     def handle_key(self, key):
         key = ARROWS.get(key, key.lower())
+        if key == "n":
+            self.set_navigation(True)
+            print("\rAutonomous navigation requested          ", end="", flush=True)
+            return
+        if key in DRIVE_KEYS and self.nav_active:
+            # Manual takeover: the navigation is stopped before applying the key
+            self.set_navigation(False)
+            self.nav_active = False
         if key == "z":
             self.speed = min(self.speed + SPEED_STEP, SPEED_MAX)
         elif key == "s":
@@ -91,11 +133,14 @@ def main():
                 break
             if key:
                 node.handle_key(key)
+            rclpy.spin_once(node, timeout_sec=0.0)  # receive /nav/enabled
             node.publish()
     except KeyboardInterrupt:
         pass
     finally:
         termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        if node.nav_active:
+            node.set_navigation(False)
         node.speed, node.steering = 0, STEER_CENTER
         node.publish()
         print("\nRobot stopped")
