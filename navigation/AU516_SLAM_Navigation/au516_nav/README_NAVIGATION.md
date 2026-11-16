@@ -11,6 +11,7 @@ Référence fonctionnelle : `Idees/navigation_lidar.txt`.
 | Nœuds ROS 2 (`pico_bridge`, `local_navigator`, `sim_2d`) | **Testés avec un ROS factice** (rclpy simulé) : câblage topics/TF, commandes série `C speed pulse`, odométrie, watchdog. |
 | `colcon build`, lancement réel ROS 2, SLAM Toolbox, RViz2 | **NON vérifiés** : ROS 2 n'était pas installable dans l'environnement de développement. À faire en premier sur le RPi5 (§5). |
 | Comportement sur la vraie voiture | **NON vérifié**. La calibration (§6) est obligatoire avant de rouler. |
+| Réglages de la voiture | **Corrigés le 16/11** avec les valeurs de l'équipe (`odometry_node.py`, `Commands list`) : empattement 0,165 m, braquage 20°, servo ±500 µs, `steering_sign: -1.0`. Les 13 tests ont été relancés avec ces valeurs : tous réussis. |
 
 ## 1. Analyse du projet existant
 
@@ -29,6 +30,7 @@ Les vitesses `V_G`/`V_D` sont tout de même calculées et publiées (`/nav/wheel
 |---|---|---|
 | `Codes/main.py` (Pico) | reçoit `C <speed> <steering_us>`, renvoie `E <encG> <encD>` toutes les 20 ms, watchdog 500 ms | rien : **inchangé** |
 | `au516_nav/encoder_reader.py` | lit les encodeurs, publie `/encoders` | aucun nœud n'**envoyait** les commandes ; pas de `/odom` ni de TF `odom → base_link` |
+| `serial_bridge.py` + `odometry_node.py` (ajoutés depuis par l'équipe) | `serial_bridge` : seul propriétaire du port série, lit `/cmd_drive`, publie `/encoders` et `/steering_pwm`. `odometry_node` : publie `/odom` et la TF `odom → base_link` | font le même travail que `pico_bridge` : **ne pas les lancer en même temps que lui** |
 | `au516_nav/scan_viewer.py`, `conversion_2D.py` | affichage / conversion du scan | conservés tels quels |
 | `rplidar_ros` | publie `/scan` (frame `laser`) | pas de TF `base_link → laser` |
 | SLAM / navigation / `/cmd_vel` | — | tout était à créer |
@@ -63,7 +65,7 @@ Compatibilité SLAM Toolbox : il lui faut `/scan` + TF `odom → base_link`. Le 
 | 9 | Interface roues | `pico_bridge.py` → Pico |
 | 10 | Visualisation | `rviz/au516_nav.rviz`, marqueurs de `local_navigator` |
 
-**Un seul éditeur de `/cmd_vel`** : `local_navigator`. **Un seul propriétaire du port série** : `pico_bridge` (ne pas lancer `encoder_reader` en même temps ; `pico_bridge` republie `/encoders` pour rester compatible).
+**Un seul éditeur de `/cmd_vel`** : `local_navigator`. **Un seul propriétaire du port série** : `pico_bridge` (ne lancer en même temps ni `encoder_reader`, ni le `serial_bridge` de l'équipe, qui ouvrent le même port, ni son `odometry_node`, qui publierait une deuxième TF `odom → base_link` ; `pico_bridge` republie `/encoders` pour rester compatible).
 
 SLAM Toolbox ne sert qu'à la pose et à la carte. Il ne planifie rien et n'évite rien.
 
@@ -111,6 +113,8 @@ sudo apt install ros-jazzy-slam-toolbox ros-jazzy-nav2-map-server python3-serial
 # sur le PC uniquement :
 sudo apt install ros-jazzy-rviz2
 ```
+
+⚠️ Ce paquet porte le même nom que celui de l'équipe (`au516_nav`, dans `Raspberry/au516_nav` sur GitHub, envoyé sur le Pi par `push_to_pi.ps1`). L'installer **remplace** leur paquet sur le Pi : à décider avec l'équipe avant. Sur GitHub, ce paquet se trouve dans `navigation/AU516_SLAM_Navigation/au516_nav`.
 
 Copier le dossier `au516_nav` à la place de l'ancien dans le workspace (`rplidar_ros` doit être dans le même `src/`) :
 
@@ -168,10 +172,10 @@ ros2 topic echo /nav/state
 
 | Paramètre | Fichier | Comment le vérifier |
 |---|---|---|
-| `wheelbase`, `width`, `front_overhang`, `rear_overhang` | `nav.yaml` (`vehicle.*`) **et** `pico_bridge.yaml` | mètre ruban. `base_link` = centre de l'essieu **arrière** |
+| `wheelbase`, `width`, `front_overhang`, `rear_overhang` | `nav.yaml` (`vehicle.*`) **et** `pico_bridge.yaml` | mètre ruban. `base_link` = centre de l'essieu **arrière**. Empattement déjà réglé : **0,165 m** (`odometry_node.py`) |
 | `laser_x`, `laser_yaw` | `nav.yaml` + arguments de `robot.launch.py` | objet à 50 cm devant : il doit apparaître droit devant dans RViz. Sinon `laser_yaw: 3.14159` |
-| `steering_sign` | `pico_bridge.yaml` | `ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.2}, angular: {z: 0.5}}"` roues en l'air : les roues doivent braquer à **gauche**. Sinon `-1.0` |
-| `servo_center_us`, `servo_us_at_max_steer`, `max_steer` | `pico_bridge.yaml` | roues droites au centre ; mesurer l'angle à la butée |
+| `steering_sign` | `pico_bridge.yaml` | Déjà réglé à **`-1.0`** (1000 µs = gauche d'après `Commands list`). À vérifier : `ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.2}, angular: {z: 0.5}}"` roues en l'air : les roues doivent braquer à **gauche**. Sinon `1.0` |
+| `servo_center_us`, `servo_us_at_max_steer`, `max_steer` | `pico_bridge.yaml` | Déjà réglés : `servo_us_at_max_steer: 500` et `max_steer: 0.34907` (20°), car 1000–2000 µs = ±20° (`Commands list`). À vérifier : roues droites à 1500 µs |
 | `encoder_left_sign`, `encoder_right_sign` | `pico_bridge.yaml` | en avançant, `ros2 topic echo /wheel_speeds` doit donner 2 valeurs **positives** |
 | `wheel_diameter` | `pico_bridge.yaml` | rouler 2 m mesurés : `/odom` doit indiquer ≈ 2 m |
 | `safety_margin`, `v_max` | `nav.yaml` | commencer avec `v_max: 0.3` |
@@ -183,6 +187,8 @@ cd ~/ros2_ws/src/AU516/au516_nav
 python3 -m pytest test/test_scenarios.py test/test_map_memory.py -v   # sans ROS
 python3 tools/plot_scenarios.py doc/                                   # figure + tableau (matplotlib)
 ```
+
+Relancés le 16/11 avec la vraie géométrie (empattement 0,165 m, braquage 20°) : **13 tests réussis sur 13**.
 
 | Test | Ce qui est vérifié |
 |---|---|
@@ -228,11 +234,15 @@ Note : les tests `test_flake8` / `test_pep257` d'ament échouaient déjà sur le
 - `setup.py` : nouveaux exécutables, installation des launch / config / rviz
 - `package.xml` : dépendances (slam_toolbox, nav_msgs, tf2_ros, numpy, rplidar_ros, rviz2…)
 
+**Modifiés le 16/11 (réglages de la voiture)**
+- `config/nav.yaml`, `config/pico_bridge.yaml`
+- valeurs par défaut de `nav_core/params.py`, `sim_2d.py` et `pico_bridge.py`, pour que la simulation utilise la même voiture
+
 **Inchangés** : `encoder_reader.py`, `scan_viewer.py`, `conversion_2D.py`, tout le code Pico (`Codes/`).
 
 ## 10. Limites connues
 
 - Pas de Gazebo : `sim_2d` est un simulateur 2D léger (pas de glissement, pas d'inertie, LiDAR sans auto-occultation par la carrosserie).
 - Le lacet de l'odométrie vient du modèle bicyclette avec le braquage **commandé**, pas mesuré. SLAM Toolbox corrige la dérive, mais une odométrie mal calibrée donnera une carte floue.
-- Le demi-tour réussit dans un couloir de 1,6 m et échoue proprement (arrêt `STOPPED`, sans collision) dans un couloir de 1,2 m, avec la géométrie par défaut (rayon de braquage ≈ 0,52 m).
+- Le demi-tour réussit dans un couloir de 1,6 m et échoue proprement (arrêt `STOPPED`, sans collision) dans un couloir de 1,2 m. Ces deux largeurs ont été mesurées avec l'ancienne géométrie (rayon de braquage ≈ 0,52 m). Avec la vraie voiture, le rayon est ≈ 0,45 m (0,165 / tan 20°) : le test G passe toujours, mais ces largeurs n'ont pas été remesurées.
 - Pour la course, la suite logique est le « tour 2+ » de `SLAM_2D.md` §11 : pure pursuit sur la trajectoire du tour 1 (le contrôleur actuel sert de couche réactive de sécurité).

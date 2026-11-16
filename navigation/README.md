@@ -2,6 +2,10 @@
 
 Travail d'Ali sur la navigation. Tout est rangé ici pour ne rien modifier dans les dossiers de l'équipe : `Codes/`, `Raspberry/`, `Ressources/` et `ros2_ws/` restent tels que l'équipe les a laissés.
 
+## `README_NAVIGATION.md`
+
+Le mode d'emploi complet du paquet de navigation autonome (`AU516_SLAM_Navigation/`) : architecture, algorithme pas à pas, installation, lancement, calibration, tests et limites. Mis à jour le 16/11 avec les vrais réglages de la voiture. Les deux autres copies, dans `AU516_SLAM_Navigation/` et `AU516_SLAM_Navigation/au516_nav/`, sont identiques.
+
 ## `docs/`
 
 | Fichier | Contenu |
