@@ -35,7 +35,7 @@ Le sujet impose trois contraintes qui orientent tout :
 
 D'où la stratégie défendue dans ce document :
 
-- **Tour 1** : conduite **réactive** prudente (suivre l'espace libre devant soi, comme dans `Idees/navigation_lidar.txt`) pendant que le SLAM construit la carte.
+- **Tour 1** : conduite **réactive** prudente (suivre l'espace libre devant soi, comme dans `navigation_lidar.txt`) pendant que le SLAM construit la carte.
 - **Tours 2 et suivants** : le robot connaît la piste. Il suit une trajectoire calculée sur la carte, anticipe les virages et peut aller plus vite.
 
 > Le SLAM n'est **pas** indispensable pour faire un tour. Il sert à faire les tours suivants **mieux et plus vite**. La conduite réactive reste la base de sécurité dans tous les cas.
@@ -200,7 +200,7 @@ Les deux moteurs reçoivent **la même consigne** (`set_speed(speed)` agit sur l
 - $\delta$ : angle de braquage des roues avant (rad, positif = à gauche) ;
 - $L$ : **empattement**, la distance entre l'essieu avant et l'essieu arrière, à mesurer.
 
-> ⚠️ Le schéma `Idees/navigation_lidar.txt` raisonne avec VG / VD (vitesses gauche et droite), comme pour un robot différentiel. Sur notre voiture, il faut remplacer « VG < VD » par « braquer à gauche, $\delta > 0$ ».
+> ⚠️ Le schéma `navigation_lidar.txt` raisonne avec VG / VD (vitesses gauche et droite), comme pour un robot différentiel. Sur notre voiture, il faut remplacer « VG < VD » par « braquer à gauche, $\delta > 0$ ».
 
 ### Version discrète (pas de temps $\Delta t$)
 

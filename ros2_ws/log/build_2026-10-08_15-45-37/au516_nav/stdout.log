@@ -1,0 +1,22 @@
+running develop
+running egg_info
+creating au516_nav.egg-info
+writing au516_nav.egg-info/PKG-INFO
+writing dependency_links to au516_nav.egg-info/dependency_links.txt
+writing entry points to au516_nav.egg-info/entry_points.txt
+writing requirements to au516_nav.egg-info/requires.txt
+writing top-level names to au516_nav.egg-info/top_level.txt
+writing manifest file 'au516_nav.egg-info/SOURCES.txt'
+reading manifest file 'au516_nav.egg-info/SOURCES.txt'
+writing manifest file 'au516_nav.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/pi/ros2_ws/install/au516_nav/lib/python3.12/site-packages/au516-nav.egg-link (link to .)
+Installing scan_viewer script to /home/pi/ros2_ws/install/au516_nav/lib/au516_nav
+
+Installed /home/pi/ros2_ws/build/au516_nav
+running symlink_data
+creating /home/pi/ros2_ws/install/au516_nav/share/ament_index
+creating /home/pi/ros2_ws/install/au516_nav/share/ament_index/resource_index
+creating /home/pi/ros2_ws/install/au516_nav/share/ament_index/resource_index/packages
+symbolically linking /home/pi/ros2_ws/build/au516_nav/resource/au516_nav -> /home/pi/ros2_ws/install/au516_nav/share/ament_index/resource_index/packages
+symbolically linking /home/pi/ros2_ws/build/au516_nav/package.xml -> /home/pi/ros2_ws/install/au516_nav/share/au516_nav

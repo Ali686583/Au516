@@ -1,0 +1,8 @@
+Metadata-Version: 2.1
+Name: au516-nav
+Version: 1.0.0
+Summary: This package contains navigation-related nodes for the AU516 robot
+Maintainer: Johvany Gustave
+Maintainer-email: johvany.gustave@ipsa.fr
+License: Apache License 2.0
+Provides-Extra: test

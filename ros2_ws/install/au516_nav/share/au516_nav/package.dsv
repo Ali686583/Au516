@@ -1,0 +1,9 @@
+source;share/au516_nav/hook/pythonpath.ps1
+source;share/au516_nav/hook/pythonpath.dsv
+source;share/au516_nav/hook/pythonpath.sh
+source;share/au516_nav/hook/ament_prefix_path.ps1
+source;share/au516_nav/hook/ament_prefix_path.dsv
+source;share/au516_nav/hook/ament_prefix_path.sh
+source;../../build/au516_nav/share/au516_nav/hook/pythonpath_develop.ps1
+source;../../build/au516_nav/share/au516_nav/hook/pythonpath_develop.dsv
+source;../../build/au516_nav/share/au516_nav/hook/pythonpath_develop.sh

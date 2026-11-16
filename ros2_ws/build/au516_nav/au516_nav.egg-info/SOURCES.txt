@@ -1,0 +1,13 @@
+package.xml
+setup.cfg
+setup.py
+au516_nav/__init__.py
+au516_nav/scan_viewer.py
+au516_nav.egg-info/PKG-INFO
+au516_nav.egg-info/SOURCES.txt
+au516_nav.egg-info/dependency_links.txt
+au516_nav.egg-info/entry_points.txt
+au516_nav.egg-info/requires.txt
+au516_nav.egg-info/top_level.txt
+au516_nav.egg-info/zip-safe
+resource/au516_nav
