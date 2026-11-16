@@ -21,6 +21,19 @@ Codes Python pour comprendre les algorithmes, testés sur PC. Ce ne sont pas des
 | `icp.py` | Recalage de deux scans par ICP (solution par SVD) | Retrouve un déplacement de 5° et (8 cm, −4 cm) : 5,01° et (0,080 ; −0,040) |
 | `pure_pursuit.py` | Suivi de trajectoire et conversion braquage → impulsion servo | Cercle de 2 m : courbure 0,521 (0,5 attendu), servo 1377 µs (à gauche) |
 
+## `AU516_SLAM_Navigation/`
+
+Copie du dossier `AU516_SLAM_Navigation` (bureau d'Ali) : une version 2.0 complète du paquet `au516_nav` avec la navigation autonome au LiDAR. Tout est expliqué dans `AU516_SLAM_Navigation/README_NAVIGATION.md`.
+
+- **Nœuds ROS 2** : `pico_bridge` (liaison série, odométrie, TF), `local_navigator` (passages, θ_cible, commande, impasses) et `sim_2d` (simulateur).
+- **Cœur de l'algorithme sans ROS** : `au516_nav/nav_core/`.
+- **Lancement** : `bringup`, `robot`, `slam`, `navigation` et `sim`.
+- **Réglages** : `nav.yaml`, `pico_bridge.yaml` et `slam_toolbox.yaml`, plus une configuration RViz.
+- **Tests** : 13 tests de scénarios en simulation (couloir, virages, zigzag, passages étroits, obstacle, impasse, circuit en anneau, carte). Ils passent tous, relancés le 16/11 sans ROS.
+- **Pas encore vérifié** : la compilation et le lancement avec ROS 2, et le comportement sur la vraie voiture. Il faut d'abord calibrer (§6 de son README).
+
+Ce paquet porte le même nom que celui de l'équipe (`au516_nav`). Il n'est pas compilé ici grâce au `COLCON_IGNORE` de `navigation/`. Pour l'essayer, il faudra le copier sur le Pi **à la place** de `Raspberry/au516_nav`, en accord avec l'équipe.
+
 ## `corrections_au516_nav/`
 
 Versions corrigées de fichiers du paquet `Raspberry/au516_nav`. **Elles ne sont pas utilisées** tant que personne ne les copie à leur place dans `Raspberry/au516_nav`. Chaque fichier est complet, avec le même chemin que dans le paquet.

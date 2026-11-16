@@ -1,0 +1,63 @@
+# Navigation locale AU516 (local_navigator). Valeurs en m, rad, m/s.
+# IMPORTANT : garder les décimales (ex. 1.0) — ROS 2 refuse un entier pour un paramètre réel.
+local_navigator:
+  ros__parameters:
+    map_frame: map
+    odom_frame: odom
+    base_frame: base_link
+    use_map: true              # exploiter /map de SLAM Toolbox
+    autostart: true            # false : attendre /nav/enable
+    beam_stride: 1             # 2 = un rayon sur deux si le CPU du RPi5 sature
+
+    vehicle:
+      wheelbase: 0.25
+      track: 0.18
+      width: 0.2
+      rear_overhang: 0.06
+      front_overhang: 0.3
+      max_steer: 0.45                     # rad (~26°)
+      laser_x: 0.22
+      laser_y: 0.0
+      laser_yaw: 0.0
+
+    nav:
+      safety_margin: 0.07
+      heading_span: 1.74533                   # rad (100°)
+      heading_step: 0.03491                   # rad (2°)
+      lookahead_cap: 2.5
+      min_passage_depth: 0.75
+      side_window: [0.15, 1.6]
+      w_depth: 1.0
+      w_side: 0.6
+      w_forward: 0.35
+      w_stability: 0.6
+      w_unknown: 0.4
+      w_deadend: 1.5
+      side_cap: 0.35
+      switch_margin: 0.08
+      centering_gain: 0.8
+      centering_deadband: 0.04
+      theta_alpha: 0.35
+      theta_rate: 2.0944                      # rad/s (120°/s)
+      v_max: 0.6
+      v_min: 0.12
+      v_narrow: 0.22
+      narrow_width: 0.55
+      a_max: 0.8
+      d_max: 1.6
+      a_lat_max: 0.9
+      turn_slowdown: 0.5
+      stop_distance: 0.3
+      slow_distance: 1.4
+      emergency_distance: 0.18
+      lookahead_min: 0.45
+      lookahead_gain: 0.6
+      stop_before_turnaround: 0.6
+      reverse_speed: 0.15
+      turnaround_max_cycles: 4
+      rear_clearance_min: 0.18
+      deadend_memory_radius: 0.8
+      scan_timeout: 0.5
+      pose_timeout: 1.0
+      degraded_speed_factor: 0.6
+
