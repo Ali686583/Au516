@@ -25,8 +25,20 @@ def generate_launch_description():
 
         Node(
             package="au516_nav",
-            executable="encoder_reader",
+            executable="serial_bridge",
             output="screen"
+        ),
+
+        # Lidar position on the robot: base_link -> laser
+        # (x y z yaw pitch roll, in m and rad; measure it on the car)
+        Node(
+            package="tf2_ros",
+            executable="static_transform_publisher",
+            arguments=[
+                "--x", "0.0", "--y", "0.0", "--z", "0.0",
+                "--yaw", "0.0", "--pitch", "0.0", "--roll", "0.0",
+                "--frame-id", "base_link", "--child-frame-id", "laser"
+            ]
         ),
 
         Node(
