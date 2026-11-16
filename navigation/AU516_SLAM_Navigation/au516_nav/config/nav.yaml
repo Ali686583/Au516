@@ -10,12 +10,12 @@ local_navigator:
     beam_stride: 1             # 2 = un rayon sur deux si le CPU du RPi5 sature
 
     vehicle:
-      wheelbase: 0.25
+      wheelbase: 0.165                    # m, mesuré (odometry_node.py de l'équipe)
       track: 0.18
       width: 0.2
       rear_overhang: 0.06
       front_overhang: 0.3
-      max_steer: 0.45                     # rad (~26°)
+      max_steer: 0.34907                  # rad = 20° (1000 us = 20° à gauche)
       laser_x: 0.22
       laser_y: 0.0
       laser_yaw: 0.0

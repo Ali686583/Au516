@@ -8,11 +8,11 @@ pico_bridge:
     encoder_left_sign: -1.0      # vérifier : en avançant, les deux vitesses de /wheel_speeds > 0
     encoder_right_sign: 1.0
     track: 0.18
-    wheelbase: 0.25
-    max_steer: 0.45              # rad
+    wheelbase: 0.165             # m, mesuré (odometry_node.py de l'équipe)
+    max_steer: 0.34907           # rad = 20° (1000 us = 20° à gauche, 2000 us = 20° à droite)
     servo_center_us: 1500        # roues droites
-    servo_us_at_max_steer: 450   # µs ajoutés au centre pour delta_max
-    steering_sign: 1.0           # -1.0 si un ω > 0 fait tourner la voiture à droite
+    servo_us_at_max_steer: 500   # µs ajoutés au centre pour delta_max : 1500 ± 500 = ±20°
+    steering_sign: -1.0          # 1000 us = gauche : un braquage à gauche (delta > 0) doit donner < 1500 us
     servo_min_us: 1000
     servo_max_us: 2000
     speed_min: -10

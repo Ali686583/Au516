@@ -10,12 +10,12 @@ import math
 
 @dataclass
 class VehicleParams:
-    wheelbase: float = 0.25  # L : essieu avant <-> essieu arrière (à mesurer)
+    wheelbase: float = 0.165  # L : essieu avant <-> essieu arrière (mesuré, odometry_node.py)
     track: float = 0.18  # voie arrière (uniquement pour le diagnostic V_G / V_D)
     width: float = 0.20  # largeur hors-tout
     rear_overhang: float = 0.06  # distance essieu arrière -> pare-choc arrière
     front_overhang: float = 0.30  # distance essieu arrière -> pare-choc avant
-    max_steer: float = 0.45  # braquage max delta_max (rad), ~26°
+    max_steer: float = 0.34907  # braquage max delta_max (rad) = 20° (1000 us = 20° à gauche)
     laser_x: float = 0.22  # position du LiDAR dans base_link
     laser_y: float = 0.0
     laser_yaw: float = 0.0  # mettre pi si le LiDAR est monté "à l'envers"

@@ -32,11 +32,11 @@ class Sim2D(Node):
         dp = self.declare_parameter
         self.scenario = dp('scenario', 'ring').value
         self.veh = VehicleParams(
-            wheelbase=dp('vehicle.wheelbase', 0.25).value,
+            wheelbase=dp('vehicle.wheelbase', 0.165).value,
             width=dp('vehicle.width', 0.20).value,
             rear_overhang=dp('vehicle.rear_overhang', 0.06).value,
             front_overhang=dp('vehicle.front_overhang', 0.30).value,
-            max_steer=dp('vehicle.max_steer', 0.45).value,
+            max_steer=dp('vehicle.max_steer', 0.34907).value,
             laser_x=dp('vehicle.laser_x', 0.22).value,
         )
         self.beams = dp('beams', 450).value  # RPLIDAR C1 : ~450-720 points / tour à 10 Hz

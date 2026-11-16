@@ -23,7 +23,7 @@ Codes Python pour comprendre les algorithmes, testés sur PC. Ce ne sont pas des
 
 ## `AU516_SLAM_Navigation/`
 
-Copie du dossier `AU516_SLAM_Navigation` (bureau d'Ali) : une version 2.0 complète du paquet `au516_nav` avec la navigation autonome au LiDAR. Tout est expliqué dans `AU516_SLAM_Navigation/README_NAVIGATION.md`.
+Copie du dossier `AU516_SLAM_Navigation` (bureau d'Ali), avec les réglages corrigés (voir plus bas) : une version 2.0 complète du paquet `au516_nav` avec la navigation autonome au LiDAR. Tout est expliqué dans `AU516_SLAM_Navigation/README_NAVIGATION.md`.
 
 - **Nœuds ROS 2** : `pico_bridge` (liaison série, odométrie, TF), `local_navigator` (passages, θ_cible, commande, impasses) et `sim_2d` (simulateur).
 - **Cœur de l'algorithme sans ROS** : `au516_nav/nav_core/`.
@@ -31,6 +31,17 @@ Copie du dossier `AU516_SLAM_Navigation` (bureau d'Ali) : une version 2.0 compl�
 - **Réglages** : `nav.yaml`, `pico_bridge.yaml` et `slam_toolbox.yaml`, plus une configuration RViz.
 - **Tests** : 13 tests de scénarios en simulation (couloir, virages, zigzag, passages étroits, obstacle, impasse, circuit en anneau, carte). Ils passent tous, relancés le 16/11 sans ROS.
 - **Pas encore vérifié** : la compilation et le lancement avec ROS 2, et le comportement sur la vraie voiture. Il faut d'abord calibrer (§6 de son README).
+
+**Réglages corrigés** (16/11) avec les valeurs de la voiture tirées de `odometry_node.py` et `Commands list` de l'équipe. Les 13 tests passent toujours avec ces valeurs.
+
+| Réglage | Avant | Après | Fichiers |
+|---|---|---|---|
+| Empattement `wheelbase` | 0,25 m | **0,165 m** | `nav.yaml`, `pico_bridge.yaml`, `params.py`, `sim_2d.py`, `pico_bridge.py` |
+| Braquage max `max_steer` | 0,45 rad (26°) | **0,34907 rad (20°)** | les mêmes |
+| `servo_us_at_max_steer` | 450 µs | **500 µs** (1500 ± 500 = ±20°) | `pico_bridge.yaml`, `pico_bridge.py` |
+| `steering_sign` | 1.0 | **-1.0** : avant, un virage à gauche envoyait plus de 1500 µs, donc braquait à droite | `pico_bridge.yaml`, `pico_bridge.py` |
+
+Encore à mesurer sur la voiture : `laser_x` (position du LiDAR), `track`, `width`, `front_overhang`, `rear_overhang`.
 
 Ce paquet porte le même nom que celui de l'équipe (`au516_nav`). Il n'est pas compilé ici grâce au `COLCON_IGNORE` de `navigation/`. Pour l'essayer, il faudra le copier sur le Pi **à la place** de `Raspberry/au516_nav`, en accord avec l'équipe.
 

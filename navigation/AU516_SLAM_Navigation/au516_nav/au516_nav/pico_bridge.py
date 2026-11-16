@@ -38,11 +38,11 @@ class PicoBridge(Node):
         self.sign_l = dp('encoder_left_sign', -1.0).value  # M1 est commandé avec -speed
         self.sign_r = dp('encoder_right_sign', 1.0).value
         self.track = dp('track', 0.18).value
-        self.L = dp('wheelbase', 0.25).value
-        self.max_steer = dp('max_steer', 0.45).value
+        self.L = dp('wheelbase', 0.165).value
+        self.max_steer = dp('max_steer', 0.34907).value  # 20°
         self.servo_center = dp('servo_center_us', 1500).value
-        self.servo_span = dp('servo_us_at_max_steer', 450).value  # µs ajoutés pour delta_max
-        self.servo_sign = dp('steering_sign', 1.0).value  # -1 si la voiture tourne à l'envers
+        self.servo_span = dp('servo_us_at_max_steer', 500).value  # µs ajoutés pour delta_max
+        self.servo_sign = dp('steering_sign', -1.0).value  # 1000 us = gauche
         self.servo_min = dp('servo_min_us', 1000).value
         self.servo_max = dp('servo_max_us', 2000).value
         self.speed_min = dp('speed_min', -10).value
