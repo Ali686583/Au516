@@ -1,0 +1,125 @@
+                     LiDAR 360°
+                        │
+                        │ /scan
+                        ▼
+             ┌─────────────────────┐
+             │ Analyse du scan 2D  │
+             │                     │
+             │ obstacles           │
+             │ murs                │
+             │ espaces libres      │
+             └──────────┬──────────┘
+                        │
+                        ▼
+          ┌────────────────────────────┐
+          │ Recherche des passages     │
+          │ réellement traversables    │
+          └─────────────┬──────────────┘
+                        │
+                        ▼
+             Direction du passage
+                   θ_cible
+                        │
+            ┌───────────┼───────────┐
+            │           │           │
+            ▼           ▼           ▼
+
+      ouverture       passage      ouverture
+      vers gauche     devant       vers droite
+
+            │           │           │
+            ▼           ▼           ▼
+
+       VG < VD       VG ≈ VD       VG > VD
+            │           │           │
+            ↖           ↑           ↗
+         GAUCHE      TOUT DROIT    DROITE
+
+
+────────────────────────────────────────────────────
+
+EXEMPLE : PAROIS EN ZIGZAG MAIS PASSAGE CENTRAL LIBRE
+
+
+      mur gauche
+
+───────┐        ┌──────┐          ┌────────
+       │        │      │          │
+       └────────┘      └──────────┘
+
+
+                     ↑
+                     │
+                     │
+                     │
+                  [ ROBOT ]
+                 ((LiDAR))
+                     │
+                     │
+                     ↑
+
+       ┌────────┐          ┌──────┐
+───────┘        └──────────┘      └────────
+
+      mur droit
+
+
+Les variations latérales se compensent
+                 │
+                 ▼
+       corridor central libre
+                 │
+                 ▼
+         θ_cible ≈ 0°
+                 │
+                 ▼
+            VG ≈ VD
+                 │
+                 ▼
+                 ↑
+            TOUT DROIT
+
+
+────────────────────────────────────────────────────
+
+ARCHITECTURE ROS 2 SIMPLIFIÉE
+
+
+             ┌───────────────┐
+             │ LiDAR 360°    │
+             └───────┬───────┘
+                     │
+                   /scan
+                     │
+                     ▼
+             ┌───────────────┐
+             │ SLAM 2D       │──────► /map
+             └───────────────┘
+                     │
+                     │
+                     ▼
+             ┌────────────────────┐
+             │ Analyse locale     │
+             │ espace libre       │
+             │ + corridor         │
+             └─────────┬──────────┘
+                       │
+                  θ_cible
+                       │
+                       ▼
+             ┌────────────────────┐
+             │ Contrôle direction │
+             │ v + ω              │
+             └─────────┬──────────┘
+                       │
+                    /cmd_vel
+                       │
+                       ▼
+               ┌─────────────┐
+               │ Contrôleur  │
+               │ des roues   │
+               └──────┬──────┘
+                      │
+                ┌─────┴─────┐
+                ▼           ▼
+             roue G       roue D

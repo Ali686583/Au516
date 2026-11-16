@@ -6,9 +6,20 @@ Travail d'Ali sur la navigation. Tout est rangé ici pour ne rien modifier dans 
 
 | Fichier | Contenu |
 |---|---|
-| `SLAM_2D.md` | Cours pas à pas sur le SLAM 2D (formules) et son adaptation au projet |
-| `navigation_lidar.txt` | Schéma de l'idée de navigation au LiDAR et de l'architecture ROS 2 |
+| `SLAM_2D.md` | Cours pas à pas sur le SLAM 2D (formules) et son adaptation au projet. Copie de `Ressources/SLAM_2D.md` |
+| `navigation_lidar.txt` | Schéma de l'idée de navigation au LiDAR et de l'architecture ROS 2. Copie de `Idees/navigation_lidar.txt` |
 | `Conception_ROS2_SLAM2D_LiDAR360_detaillee.md` | Document de conception : secteur avant → virage, secteur arrière → vitesse |
+| `braquage_vitesse.md` | Cours sur les formules de braquage et de vitesse en virage, avec les valeurs réelles de la voiture |
+
+## `codes/`
+
+Codes Python pour comprendre les algorithmes, testés sur PC. Ce ne sont pas des nœuds ROS : ils ne sont lancés par rien et n'utilisent pas le robot. Chaque fichier a une démonstration : `python3 <fichier>.py` (nécessite `numpy`, et `scipy` pour `icp.py`).
+
+| Fichier | Contenu | Résultat de la démonstration |
+|---|---|---|
+| `grille_occupation.py` | Carte en grille d'occupation (log-odds, tracé des rayons de Bresenham) | Un mur vu 3 fois : p = 0,93 sur le mur, 0,02 devant, 0,50 ailleurs |
+| `icp.py` | Recalage de deux scans par ICP (solution par SVD) | Retrouve un déplacement de 5° et (8 cm, −4 cm) : 5,01° et (0,080 ; −0,040) |
+| `pure_pursuit.py` | Suivi de trajectoire et conversion braquage → impulsion servo | Cercle de 2 m : courbure 0,521 (0,5 attendu), servo 1377 µs (à gauche) |
 
 ## `corrections_au516_nav/`
 
