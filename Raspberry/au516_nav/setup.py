@@ -30,8 +30,6 @@ setup(
             'conversion_2D = au516_nav.conversion_2D:main',
             'serial_bridge = au516_nav.serial_bridge:main',
             'odometry_node = au516_nav.odometry_node:main',
-            'move = au516_nav.move:main',
-            'lidar_map = au516_nav.Lidar_map:main',
         ],
     },
 )
